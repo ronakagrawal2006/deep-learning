@@ -1,0 +1,86 @@
+LSTM Implemetation overview:
+first we need to encode the text, 
+
+
+A typical tensor flow implementation has folllwing components:
+1. input feed,
+2. model which further has: 
+	a. loss function,
+	b. optimizer
+
+
+if we create a 101 sample application,
+we will have something like 
+
+
+now there are 2 parts to it, whatever part you implement, you need to add a definition of the same in the graph.
+i.e. if you are adding 2 variables, you would need to create 2 placeholders for those 2 variables and then create a third variable to store the result. I know this is crappy, but thats the way it is. bear with it!.
+
+now lets begin
+
+if we were to create a hello world without parameter:
+
+import tensorflow as tf
+
+constant_placeholder= tf.constant("hello world") # we would need this to be injected in model somehow?
+Note, the session will run tensors!#
+lets see how this works
+
+hello_constant= tf.constant("hell, tensor sucks")
+with tf.Session() as sess:
+	sess.run(hello_constant)
+
+
+well, how do i pass a parameter and perform addittion of 2 numbers?
+
+honestly, the ask is really simple, but given the pain in ass tensorflow is, this is gonna be shit!
+
+hmm, lets see.
+
+create 2 variables,
+
+first_var= tf.constant(2)
+second_var= tf.constant(3)
+addittion=tf.add(first_var,second_var)
+
+
+ you see here what the shit that we had to go thru, we had to create an entire graph, for just simple addtion
+and we did not suply values yet.
+
+now supply values when you are runninng:
+
+
+with tf.Session() as sess:
+	sess.run(addition)  # i think if the input is tensor function, it will directly execute it,
+
+
+Okay, then why the hell we need feed_dict?
+if you want to pass parameters
+
+
+#placeholders usage, more like paramteres without ref
+
+first_var= tf.placeholder(tf.float32,shape=(),name="first_var")
+second_var= tf.placeholder(tf.float32,shape=(),name="second_var")
+addittion=tf.add(first_var,second_var)
+
+with tf.Session() as sess:
+    sess.run(tf.global_variables_initializer())
+    add = sess.run([addittion],feed_dict={first_var:2.1,second_var:3.2})
+    print(add)
+
+
+
+Now that we have basics working, if we had a custom method that we wanted to execute, custom method and not a tensor:
+
+def my_add(a,b):
+    print("inside custom method doing shit!")
+    return a+b
+first_var= tf.placeholder(tf.float32,shape=(),name="first_var")
+second_var= tf.placeholder(tf.float32,shape=(),name="second_var")
+addittion=my_add(first_var,second_var)
+
+with tf.Session() as sess:
+    sess.run(tf.global_variables_initializer())
+    add = sess.run([addittion],feed_dict={first_var:2.1,second_var:3.2})
+    print(add)
